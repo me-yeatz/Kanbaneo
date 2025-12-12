@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Kanbaneo</string>
+    <string name="title_activity_main">Kanbaneo</string>
+    <string name="package_name">com.yeatz.kanbaneo</string>
+    <string name="custom_url_scheme">com.yeatz.kanbaneo</string>
+</resources>

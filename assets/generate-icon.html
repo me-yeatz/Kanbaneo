@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Kanbaneo Icon Generator</title>
+    <style>
+        body {
+            background: #1a1a2e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: white;
+            gap: 20px;
+        }
+        .canvas-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        canvas {
+            border: 2px solid #a855f7;
+            border-radius: 10px;
+        }
+        .label {
+            text-align: center;
+            margin-top: 5px;
+            color: #a855f7;
+        }
+        button {
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        .instructions {
+            max-width: 600px;
+            text-align: center;
+            color: #c4b5fd;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <h1>Kanbaneo Icon Generator</h1>
+    <p class="instructions">
+        Click the buttons below to download icons. For Windows .ico file,
+        download the 256px PNG and use an online converter like
+        <a href="https://convertio.co/png-ico/" style="color: #a855f7;">convertio.co</a>
+    </p>
+
+    <div class="canvas-container">
+        <div>
+            <canvas id="icon-1024" width="1024" height="1024"></canvas>
+            <div class="label">1024x1024 (App Store)</div>
+        </div>
+        <div>
+            <canvas id="icon-512" width="512" height="512"></canvas>
+            <div class="label">512x512 (Standard)</div>
+        </div>
+        <div>
+            <canvas id="icon-256" width="256" height="256"></canvas>
+            <div class="label">256x256 (Windows)</div>
+        </div>
+        <div>
+            <canvas id="icon-192" width="192" height="192"></canvas>
+            <div class="label">192x192 (Android)</div>
+        </div>
+        <div>
+            <canvas id="icon-128" width="128" height="128"></canvas>
+            <div class="label">128x128</div>
+        </div>
+        <div>
+            <canvas id="icon-64" width="64" height="64"></canvas>
+            <div class="label">64x64</div>
+        </div>
+    </div>
+
+    <div>
+        <button onclick="downloadAll()">Download All PNGs</button>
+        <button onclick="downloadSize(1024)">Download 1024px</button>
+        <button onclick="downloadSize(512)">Download 512px</button>
+        <button onclick="downloadSize(256)">Download 256px</button>
+    </div>
+
+    <script>
+        function drawIcon(canvas) {
+            const ctx = canvas.getContext('2d');
+            const size = canvas.width;
+            const scale = size / 512;
+
+            // Background gradient
+            const bgGrad = ctx.createLinearGradient(0, 0, size, size);
+            bgGrad.addColorStop(0, '#1a0a2e');
+            bgGrad.addColorStop(1, '#0f0a1a');
+
+            // Purple gradient
+            const purpleGrad = ctx.createLinearGradient(0, 0, size, size);
+            purpleGrad.addColorStop(0, '#c084fc');
+            purpleGrad.addColorStop(0.5, '#a855f7');
+            purpleGrad.addColorStop(1, '#7c3aed');
+
+            // Draw rounded background
+            ctx.beginPath();
+            const radius = 100 * scale;
+            ctx.roundRect(0, 0, size, size, radius);
+            ctx.fillStyle = bgGrad;
+            ctx.fill();
+
+            // Glow effect
+            ctx.shadowColor = '#a855f7';
+            ctx.shadowBlur = 20 * scale;
+
+            // Column 1
+            drawColumn(ctx, 70 * scale, 120 * scale, 100 * scale, 280 * scale, purpleGrad, scale);
+            drawCard(ctx, 85 * scale, 160 * scale, 70 * scale, 50 * scale, purpleGrad, 0.8);
+            drawCard(ctx, 85 * scale, 225 * scale, 70 * scale, 40 * scale, purpleGrad, 0.6);
+            drawCard(ctx, 85 * scale, 280 * scale, 70 * scale, 45 * scale, purpleGrad, 0.4);
+
+            // Column 2
+            drawColumn(ctx, 195 * scale, 120 * scale, 100 * scale, 280 * scale, purpleGrad, scale);
+            drawCard(ctx, 210 * scale, 160 * scale, 70 * scale, 55 * scale, purpleGrad, 0.7);
+            drawCard(ctx, 210 * scale, 230 * scale, 70 * scale, 35 * scale, purpleGrad, 0.5);
+
+            // Column 3
+            drawColumn(ctx, 320 * scale, 120 * scale, 100 * scale, 280 * scale, purpleGrad, scale);
+            drawCard(ctx, 335 * scale, 160 * scale, 70 * scale, 45 * scale, purpleGrad, 0.9);
+            drawCard(ctx, 335 * scale, 220 * scale, 70 * scale, 50 * scale, purpleGrad, 0.6);
+            drawCard(ctx, 335 * scale, 285 * scale, 70 * scale, 35 * scale, purpleGrad, 0.4);
+
+            ctx.shadowBlur = 0;
+
+            // Window dots
+            ctx.fillStyle = '#ff5f57';
+            ctx.beginPath();
+            ctx.arc(90 * scale, 85 * scale, 8 * scale, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#febc2e';
+            ctx.beginPath();
+            ctx.arc(115 * scale, 85 * scale, 8 * scale, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#28c840';
+            ctx.beginPath();
+            ctx.arc(140 * scale, 85 * scale, 8 * scale, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Plus button
+            ctx.shadowColor = '#a855f7';
+            ctx.shadowBlur = 15 * scale;
+            ctx.fillStyle = purpleGrad;
+            ctx.beginPath();
+            ctx.arc(400 * scale, 70 * scale, 25 * scale, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.shadowBlur = 0;
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 3 * scale;
+            ctx.lineCap = 'round';
+
+            ctx.beginPath();
+            ctx.moveTo(390 * scale, 70 * scale);
+            ctx.lineTo(410 * scale, 70 * scale);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(400 * scale, 60 * scale);
+            ctx.lineTo(400 * scale, 80 * scale);
+            ctx.stroke();
+        }
+
+        function drawColumn(ctx, x, y, w, h, grad, scale) {
+            ctx.fillStyle = 'rgba(168, 85, 247, 0.2)';
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = 2 * scale;
+            ctx.beginPath();
+            ctx.roundRect(x, y, w, h, 12 * scale);
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        function drawCard(ctx, x, y, w, h, grad, opacity) {
+            ctx.globalAlpha = opacity;
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.roundRect(x, y, w, h, 8);
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        }
+
+        // Draw all canvases
+        const sizes = [1024, 512, 256, 192, 128, 64];
+        sizes.forEach(size => {
+            const canvas = document.getElementById(`icon-${size}`);
+            if (canvas) drawIcon(canvas);
+        });
+
+        function downloadSize(size) {
+            const canvas = document.getElementById(`icon-${size}`);
+            const link = document.createElement('a');
+            link.download = `kanbaneo-icon-${size}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function downloadAll() {
+            sizes.forEach((size, i) => {
+                setTimeout(() => downloadSize(size), i * 500);
+            });
+        }
+    </script>
+</body>
+</html>

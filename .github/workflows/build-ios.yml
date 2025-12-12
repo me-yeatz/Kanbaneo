@@ -1,0 +1,123 @@
+name: Build iOS App
+
+on:
+  push:
+    branches: [main, master]
+    paths-ignore:
+      - '**.md'
+      - 'android/**'
+      - 'electron/**'
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Sync Capacitor iOS
+        run: npx cap sync ios
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Install CocoaPods dependencies
+        run: |
+          cd ios/App
+          pod install
+
+      - name: Build iOS App (Simulator)
+        run: |
+          cd ios/App
+          xcodebuild -workspace App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -destination 'generic/platform=iOS Simulator' \
+            -archivePath build/App.xcarchive \
+            clean build \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-simulator-build
+          path: ios/App/build/
+          retention-days: 14
+
+  # For App Store release, you'll need to add signing certificates
+  # Uncomment and configure the job below when ready
+
+  # build-ios-release:
+  #   runs-on: macos-latest
+  #   needs: build-ios
+  #   if: github.ref == 'refs/heads/main'
+  #
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '20'
+  #
+  #     - name: Install dependencies
+  #       run: npm install
+  #
+  #     - name: Sync iOS
+  #       run: npx cap sync ios
+  #
+  #     - name: Install CocoaPods
+  #       run: cd ios/App && pod install
+  #
+  #     - name: Import signing certificate
+  #       uses: apple-actions/import-codesign-certs@v2
+  #       with:
+  #         p12-file-base64: ${{ secrets.IOS_CERTIFICATE_P12 }}
+  #         p12-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+  #
+  #     - name: Import provisioning profile
+  #       uses: apple-actions/download-provisioning-profiles@v2
+  #       with:
+  #         bundle-id: com.yeatz.kanbaneo
+  #         issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+  #         api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
+  #         api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+  #
+  #     - name: Build and Archive
+  #       run: |
+  #         cd ios/App
+  #         xcodebuild -workspace App.xcworkspace \
+  #           -scheme App \
+  #           -configuration Release \
+  #           -archivePath build/App.xcarchive \
+  #           archive
+  #
+  #     - name: Export IPA
+  #       run: |
+  #         cd ios/App
+  #         xcodebuild -exportArchive \
+  #           -archivePath build/App.xcarchive \
+  #           -exportPath build/export \
+  #           -exportOptionsPlist ExportOptions.plist
+  #
+  #     - name: Upload IPA
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: ios-ipa
+  #         path: ios/App/build/export/*.ipa

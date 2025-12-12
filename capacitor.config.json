@@ -1,0 +1,32 @@
+{
+  "appId": "com.yeatz.kanbaneo",
+  "appName": "Kanbaneo",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "launchAutoHide": true,
+      "backgroundColor": "#0f0a1a",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "splashFullScreen": true,
+      "splashImmersive": true
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#0f0a1a"
+    }
+  },
+  "ios": {
+    "contentInset": "automatic",
+    "backgroundColor": "#0f0a1a"
+  },
+  "android": {
+    "backgroundColor": "#0f0a1a",
+    "allowMixedContent": true
+  }
+}
