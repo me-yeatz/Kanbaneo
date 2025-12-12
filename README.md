@@ -42,10 +42,10 @@
 <div align="center">
 
 ### Desktop
-![Kanbaneo Desktop](assets/Kanbaneo%20Screenshot%20Desktop.png)
+![Kanbaneo Desktop](./assets/kanbaneo-desktop.png)
 
 ### Mobile
-<img src="assets/Kanbaneo%20Screenshot%20Mobile.png" alt="Kanbaneo Mobile" width="300">
+<img src="./assets/kanbaneo-mobile.png" alt="Kanbaneo Mobile" width="300">
 
 </div>
 
