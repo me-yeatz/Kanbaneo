@@ -13,6 +13,8 @@
 
 </div>
 
+![Kanbaneo Desktop](./assets/kanbaneo-desktop.png)
+
 ---
 
 ## Features
@@ -37,14 +39,10 @@
 - **Quick Notes**: Jot down quick thoughts without creating full tasks
 - **Toast Notifications**: Instant feedback for all actions
 
-## Screenshots
+## Mobile Preview
 
 <div align="center">
 
-### Desktop
-![Kanbaneo Desktop](./assets/kanbaneo-desktop.png)
-
-### Mobile
 <img src="./assets/kanbaneo-mobile.png" alt="Kanbaneo Mobile" width="300">
 
 </div>
