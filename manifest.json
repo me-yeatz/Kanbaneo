@@ -1,0 +1,18 @@
+{
+  "name": "Kanbaneo",
+  "short_name": "Kanbaneo",
+  "description": "Neon-powered Kanban Board - Organize your tasks with style",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#a855f7",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "assets/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
