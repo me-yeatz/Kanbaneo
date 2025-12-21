@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#a855f7">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Kanbaneo">
+    <title>Kanbaneo - Neon Kanban Board</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="assets/icon.png">
+    <link rel="apple-touch-icon" href="assets/icon.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <i class="bi bi-kanban"></i>
+                <span>Kanbaneo</span>
+            </div>
+            <div class="stats">
+                <div class="stat-item" id="total-tasks">
+                    <i class="bi bi-list-task"></i>
+                    <span>0</span> Tasks
+                </div>
+                <div class="stat-item" id="completed-today">
+                    <i class="bi bi-check2-circle"></i>
+                    <span>0</span> Done Today
+                </div>
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="btn btn-primary" id="add-task-btn">
+                <i class="bi bi-plus-lg"></i>
+                <span>Add Task</span>
+            </button>
+            <button class="btn btn-secondary" id="add-column-btn">
+                <i class="bi bi-columns-gap"></i>
+                <span>Add Column</span>
+            </button>
+            <button class="btn btn-secondary" id="new-note-btn">
+                <i class="bi bi-sticky"></i>
+                <span>New Note</span>
+            </button>
+            <button class="btn btn-icon" id="ai-suggest-btn" title="AI Suggestions">
+                <i class="bi bi-stars"></i>
+            </button>
+            <button class="btn btn-icon" id="theme-toggle" title="Toggle Theme">
+                <i class="bi bi-moon-stars"></i>
+            </button>
+            <button class="btn btn-icon" id="export-btn" title="Export Board">
+                <i class="bi bi-download"></i>
+            </button>
+            <button class="btn btn-icon" id="import-btn" title="Import Board">
+                <i class="bi bi-upload"></i>
+            </button>
+            <button class="btn btn-icon" id="help-btn" title="Keyboard Shortcuts">
+                <i class="bi bi-question-circle"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Empty State -->
+        <div id="empty-state" class="empty-state">
+            <div class="empty-state-content">
+                <i class="bi bi-kanban"></i>
+                <h2>Welcome to Kanbaneo</h2>
+                <p>Your neon-powered kanban board is empty. Create your first task to get started!</p>
+                <div class="empty-state-actions">
+                    <button class="btn btn-primary" id="add-first-task">
+                        <i class="bi bi-plus-lg"></i>
+                        Create First Task
+                    </button>
+                    <button class="btn btn-secondary" id="use-ai-suggestions">
+                        <i class="bi bi-stars"></i>
+                        Use AI Suggestions
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kanban Board -->
+        <div id="kanban-board" class="kanban-board"></div>
+    </main>
+
+    <!-- Task Modal -->
+    <div id="task-modal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h2><i class="bi bi-pencil-square"></i> Task Details</h2>
+                    <button class="modal-close" id="close-task-modal">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="task-form">
+                        <div class="form-group">
+                            <label for="task-title">Title</label>
+                            <input type="text" id="task-title" name="title" placeholder="Enter task title..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="task-description">Description</label>
+                            <textarea id="task-description" name="description" placeholder="Enter task description..." rows="3"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="task-priority">Priority</label>
+                                <select id="task-priority" name="priority">
+                                    <option value="low">Low</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="high">High</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="task-column">Column</label>
+                                <select id="task-column" name="column">
+                                    <option value="todo">To Do</option>
+                                    <option value="inprogress">In Progress</option>
+                                    <option value="review">Review</option>
+                                    <option value="onhold">On Hold</option>
+                                    <option value="done">Done</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="btn btn-secondary" id="cancel-task">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Task</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Column Modal -->
+    <div id="column-modal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h2><i class="bi bi-columns-gap"></i> New Column</h2>
+                    <button class="modal-close" id="close-column-modal">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="column-form">
+                        <div class="form-group">
+                            <label for="column-name">Column Name</label>
+                            <input type="text" id="column-name" name="name" placeholder="Enter column name..." required>
+                        </div>
+                        <div class="form-group">
+                            <label>Column Color</label>
+                            <input type="hidden" id="column-color" name="color" value="#a855f7">
+                            <div class="color-picker">
+                                <div class="color-option" data-color="#00ffff" style="background: #00ffff;"></div>
+                                <div class="color-option" data-color="#a855f7" style="background: #a855f7;"></div>
+                                <div class="color-option" data-color="#ff00ff" style="background: #ff00ff;"></div>
+                                <div class="color-option" data-color="#00ff00" style="background: #00ff00;"></div>
+                                <div class="color-option" data-color="#ffff00" style="background: #ffff00;"></div>
+                                <div class="color-option" data-color="#ff5500" style="background: #ff5500;"></div>
+                                <div class="color-option" data-color="#ff0066" style="background: #ff0066;"></div>
+                                <div class="color-option" data-color="#00ff88" style="background: #00ff88;"></div>
+                            </div>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="btn btn-secondary" id="cancel-column">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Create Column</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <div class="modal-card modal-card-sm">
+                <div class="modal-body">
+                    <div class="confirm-icon">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                    <h3 class="confirm-title">Confirm Action</h3>
+                    <p class="confirm-message" id="confirm-message">Are you sure?</p>
+                    <div class="confirm-actions">
+                        <button class="btn btn-secondary" id="confirm-cancel">Cancel</button>
+                        <button class="btn btn-danger" id="confirm-ok">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Panel -->
+    <div id="ai-panel" class="ai-panel">
+        <div class="ai-panel-header">
+            <h3><i class="bi bi-stars"></i> AI Suggestions</h3>
+            <div class="ai-panel-actions">
+                <button class="btn btn-icon btn-sm" id="refresh-ai" title="Refresh">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+                <button class="btn btn-icon btn-sm ai-close" title="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>
+        <div class="ai-panel-content">
+            <div class="ai-category">
+                <h4><i class="bi bi-code-slash"></i> Development</h4>
+                <div class="ai-suggestions" data-category="development"></div>
+            </div>
+            <div class="ai-category">
+                <h4><i class="bi bi-briefcase"></i> General</h4>
+                <div class="ai-suggestions" data-category="general"></div>
+            </div>
+        </div>
+        <div class="ai-panel-footer">
+            <button class="btn btn-primary btn-sm" id="add-all-ai">
+                <i class="bi bi-plus-circle"></i> Add All Development Tasks
+            </button>
+        </div>
+    </div>
+
+    <!-- Shortcuts Help Modal -->
+    <div id="shortcuts-help" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h2><i class="bi bi-keyboard"></i> Keyboard Shortcuts</h2>
+                    <button class="modal-close" id="close-help">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="shortcuts-list">
+                        <div class="shortcut-item">
+                            <kbd>Ctrl</kbd> + <kbd>N</kbd>
+                            <span>New Task</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>Ctrl</kbd> + <kbd>C</kbd>
+                            <span>New Column</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>K</kbd>
+                            <span>Toggle AI Panel</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>?</kbd>
+                            <span>Show Shortcuts</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>Esc</kbd>
+                            <span>Close Modals</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notes Container -->
+    <div id="notes-container" class="notes-container">
+        <div class="notes-header">
+            <h3><i class="bi bi-sticky"></i> Quick Notes</h3>
+            <button id="toggle-notes" class="btn btn-icon btn-sm">
+                <i class="bi bi-chevron-down"></i>
+            </button>
+        </div>
+        <div class="notes-content" id="notes-content"></div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i class="toast-icon bi bi-check-circle"></i>
+        <span class="toast-message">Notification</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>by yeatz &copy; 2025</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
